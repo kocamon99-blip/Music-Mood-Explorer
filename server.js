@@ -302,7 +302,9 @@ app.post('/undo', (req, res) => {
   res.json({ message: `ย้อน ${last.action} ของ ${last.song.title} แล้ว`, size: watchlist.size() });
 });
 
-loadSongs().then(() => {
+loadSongs();
+
+if (require.main === module) {
   const startServer = (port) => {
     const server = app.listen(port, () => {
       console.log(`🚀 http://localhost:${port}`);
@@ -320,4 +322,6 @@ loadSongs().then(() => {
   };
 
   startServer(PORT);
-});
+}
+
+module.exports = app;
