@@ -19,8 +19,8 @@ const previewJobs = new Map();
 const previewCacheDirectory = path.join(os.tmpdir(), 'music-mood-explorer-previews');
 
 const fallbackSongs = JSON.parse(
-  fs.readFileSync('./fallbackSongs.json', 'utf8'));
-
+  fs.readFileSync(path.join(__dirname, 'fallbackSongs.json'), 'utf8')
+);
 function normalizeSong(song, mood = 'chill', fallbackIndex = 0) {
   return {
     id: song.trackId || `${song.artistId || 'song'}-${fallbackIndex}`,
