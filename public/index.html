@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Mood Explorer</title>
+  <style>
+    :root {
+      --bg: #09111f;
+      --bg-soft: #111c2c;
+      --panel: rgba(17, 28, 44, 0.86);
+      --panel-alt: rgba(19, 35, 54, 0.9);
+      --primary: #8b5cf6;
+      --primary-2: #3b82f6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --text: #e5eefb;
+      --muted: #9bb0cf;
+      --line: rgba(148, 163, 184, 0.18);
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, "TH Sarabun New", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.22), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.18), transparent 24%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: rgba(9, 17, 31, 0.85);
+      border-bottom: 1px solid var(--line);
+      padding: 26px 28px 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 2vw, 2.3rem);
+      letter-spacing: 0.03em;
+    }
+
+    .brand p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .status-pill {
+      background: rgba(16, 185, 129, 0.12);
+      color: #baf7de;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 28px 36px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .summary-card {
+      background: linear-gradient(180deg, rgba(17, 28, 44, 0.9), rgba(13, 22, 35, 0.95));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px 18px 14px;
+      box-shadow: 0 20px 32px rgba(15, 23, 42, 0.18);
+    }
+
+    .summary-card .label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .summary-card strong {
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .summary-card small {
+      color: #cfe0ff;
+      font-size: 0.8rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(300px, 1fr);
+      gap: 20px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 18px 12px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.2);
+    }
+
+    .panel-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-heading h2 {
+      margin: 0;
+      font-size: 1.08rem;
+      letter-spacing: 0.03em;
+    }
+
+    .panel-heading .tag {
+      background: rgba(59, 130, 246, 0.12);
+      color: #bfe4ff;
+      border: 1px solid rgba(59, 130, 246, 0.22);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .moods {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .mood-btn, select, button {
+      font: inherit;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(148, 163, 184, 0.06);
+      color: var(--text);
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .mood-btn:hover, button:hover, select:hover {
+      transform: translateY(-1px);
+      border-color: rgba(165, 180, 252, 0.45);
+    }
+
+    .mood-btn.active {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.9), rgba(59, 130, 246, 0.9));
+      border-color: rgba(191, 219, 254, 0.4);
+      color: white;
+      box-shadow: 0 8px 18px rgba(139, 92, 246, 0.35);
+    }
+
+    button.primary {
+      background: linear-gradient(135deg, var(--success), #059669);
+      border-color: rgba(167, 243, 208, 0.5);
+      color: white;
+    }
+
+    button.warn {
+      background: linear-gradient(135deg, var(--warning), #d97706);
+      border-color: rgba(254, 215, 170, 0.4);
+      color: white;
+    }
+
+    #sortInfo {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-left: auto;
+    }
+
+    #songs {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .card:hover {
+      background: rgba(59, 130, 246, 0.06);
+      border-color: rgba(96, 165, 250, 0.18);
+    }
+
+    .card img {
+      width: 58px;
+      height: 58px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.2);
+    }
+
+    .card .info {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card strong {
+      font-size: 0.96rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.74rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .eps {
+      color: #bbd1ff;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .card button {
+      padding: 7px 12px;
+      border-radius: 10px;
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #bcf0da;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.87rem;
+    }
+
+    li {
+      padding: 10px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(148, 163, 184, 0.03);
+      color: var(--text);
+    }
+
+    li span {
+      float: right;
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    li.empty {
+      color: var(--muted);
+      font-style: italic;
+      text-align: center;
+      background: rgba(148, 163, 184, 0.02);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.18);
+      color: #d9ebff;
+      font-size: 0.7rem;
+      border: 1px solid rgba(59, 130, 246, 0.24);
+    }
+
+    #error {
+      display: none;
+      margin: 18px auto 0;
+      max-width: 1280px;
+      background: rgba(239, 68, 68, 0.1);
+      color: #fecaca;
+      border: 1px solid rgba(239, 68, 68, 0.28);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.72);
+      z-index: 20;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-content {
+      position: relative;
+      width: min(440px, 100%);
+      background: linear-gradient(180deg, rgba(13, 19, 30, 0.98), rgba(16, 24, 36, 0.98));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 18px 40px rgba(2, 6, 23, 0.5);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-right: 22px;
+    }
+
+    .modal-header img {
+      width: 92px;
+      height: 92px;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+    }
+
+    .modal-header h2 {
+      margin: 0 0 6px;
+      font-size: 1.2rem;
+    }
+
+    .modal-header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 18px 0 0;
+    }
+
+    .details div {
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(148, 163, 184, 0.04);
+      border: 1px solid var(--line);
+    }
+
+    .details dt {
+      color: var(--muted);
+      font-size: 0.7rem;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .details dd {
+      margin: 0;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .details a {
+      color: #cfdcff;
+      text-decoration: none;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .summary-grid { grid-template-columns: 1fr; }
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .panel, header, .page { padding-left: 16px; padding-right: 16px; }
+      .card { flex-wrap: wrap; }
+      .card button { width: 100%; }
+      .details { grid-template-columns: 1fr; }
+    }
+
+    :root {
+      --bg: #10090b;
+      --bg-soft: #1b1013;
+      --panel: rgba(29, 17, 20, 0.94);
+      --panel-alt: #241519;
+      --primary: #9f1239;
+      --primary-2: #6f1028;
+      --success: #9f1239;
+      --warning: #84233a;
+      --text: #fff4f4;
+      --muted: #d0b9bd;
+      --line: rgba(255, 222, 228, 0.14);
+      --danger: #fb7185;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse at 12% 0%, rgba(120, 18, 43, 0.24), transparent 38%),
+        radial-gradient(ellipse at 100% 55%, rgba(84, 15, 31, 0.2), transparent 34%),
+        var(--bg);
+      line-height: 1.55;
+    }
+
+    header { background: rgba(16, 9, 11, 0.9); }
+    .brand-row { display: flex; align-items: center; gap: 16px; }
+    .profile-avatar {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(255, 199, 210, 0.3);
+      border-radius: 18px;
+      background: linear-gradient(145deg, #a51d42, #4c101f);
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: 0 10px 28px rgba(120, 18, 43, 0.34);
+    }
+    .status-pill {
+      background: rgba(159, 18, 57, 0.16);
+      color: #ffdce4;
+      border-color: rgba(251, 113, 133, 0.3);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .summary-card {
+      background: linear-gradient(145deg, rgba(45, 22, 28, 0.96), rgba(24, 14, 17, 0.98));
+      border-radius: 18px;
+    }
+    .summary-card small { color: #e2cbd0; }
+    .panel { background: rgba(26, 16, 19, 0.94); }
+    .panel-heading .tag, .badge {
+      background: rgba(159, 18, 57, 0.16);
+      border-color: rgba(251, 113, 133, 0.25);
+      color: #ffdce4;
+    }
+    .mood-btn, select, button {
+      min-height: 42px;
+      background: #211519;
+      border-color: rgba(255, 222, 228, 0.22);
+    }
+    .mood-btn:hover, button:hover, select:hover {
+      border-color: #fda4af;
+      background-color: #321821;
+      transform: translateY(-1px);
+    }
+    .mood-btn.active {
+      background: linear-gradient(135deg, #a51d42, #6f1028);
+      border-color: #fda4af;
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(159, 18, 57, 0.28);
+    }
+    button.primary, button.warn {
+      background: linear-gradient(135deg, #a51d42, #6f1028);
+      border-color: rgba(255, 190, 204, 0.36);
+    }
+    button:focus-visible, select:focus-visible, a:focus-visible, audio:focus-visible,
+    .track-open:focus-visible {
+      outline: 3px solid #fda4af;
+      outline-offset: 3px;
+    }
+    .card {
+      cursor: default;
+      padding: 12px;
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.015);
+    }
+    .card:hover {
+      background: rgba(159, 18, 57, 0.1);
+      border-color: rgba(251, 113, 133, 0.3);
+    }
+    .card img { border-radius: 12px; }
+    .track-open {
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      min-height: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .track-open:hover { background: transparent; transform: none; color: #fda4af; }
+    .card .card-actions { display: flex; align-items: center; gap: 8px; }
+    .card .preview-btn, .card .queue-btn {
+      padding: 7px 11px;
+      border-radius: 10px;
+      background: rgba(159, 18, 57, 0.15);
+      border-color: rgba(251, 113, 133, 0.3);
+      color: #ffe1e7;
+    }
+    .card .preview-btn:disabled { cursor: not-allowed; opacity: 0.55; }
+    .card .queue-btn { background: #321821; }
+    #previewPlayer {
+      margin: 14px 0;
+      padding: 14px;
+      border: 1px solid rgba(251, 113, 133, 0.28);
+      border-radius: 14px;
+      background: linear-gradient(120deg, rgba(110, 16, 40, 0.28), rgba(29, 17, 20, 0.7));
+    }
+    #previewPlayer[hidden] { display: none; }
+    #previewTitle { display: block; margin: 0 0 4px; }
+    #previewArtist { color: var(--muted); font-size: 0.86rem; }
+    #previewAudio { display: block; margin-top: 8px; }
+    #error { color: #ffe1e7; background: rgba(136, 19, 48, 0.22); }
+    .modal { overscroll-behavior: contain; }
+    .modal-content { background: linear-gradient(160deg, #28151b, #140d10); }
+    .details a { color: #ffc1cd; text-decoration: underline; text-underline-offset: 3px; }
+
+    @media (max-width: 640px) {
+      .brand-row { align-items: flex-start; }
+      .profile-avatar { width: 48px; height: 48px; border-radius: 15px; }
+      .card .card-actions { width: 100%; }
+      .card .card-actions button { flex: 1; width: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand-row">
+        <div class="profile-avatar" aria-hidden="true">♫</div>
+        <div class="brand">
+          <h1>Your Music Profile</h1>
+          <p>Music Mood Explorer · Find the soundtrack for every mood.</p>
+        </div>
+      </div>
+      <div class="status-pill"><span aria-hidden="true">●</span> พร้อมให้คุณเลือกฟัง</div>
+    </div>
+  </header>
+
+  <div id="error" role="alert" aria-live="assertive"></div>
+
+  <main class="page">
+    <section class="summary-grid" aria-label="สรุปโปรไฟล์การฟังเพลง">
+      <div class="summary-card" aria-live="polite">
+        <span class="label">Current Mood</span>
+        <strong id="currentMood">chill</strong>
+        <small>เพลงที่กำลังแสดง</small>
+      </div>
+      <div class="summary-card">
+        <span class="label">Queue</span>
+        <strong id="queueSummary">0</strong>
+        <small>จำนวนเพลงในคิว</small>
+      </div>
+      <div class="summary-card">
+        <span class="label">History</span>
+        <strong id="historySummary">0</strong>
+        <small>กิจกรรมล่าสุด</small>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel" aria-labelledby="recommendationsHeading">
+        <div class="panel-heading">
+          <h2 id="recommendationsHeading">เพลงที่แนะนำ</h2>
+          <span class="tag" id="sortInfo" aria-live="polite">กำลังโหลด...</span>
+        </div>
+
+        <div class="toolbar" role="group" aria-label="เลือกอารมณ์เพลง">
+          <div class="moods">
+            <button class="mood-btn active" data-mood="chill" aria-pressed="true">Chill</button>
+            <button class="mood-btn" data-mood="happy" aria-pressed="false">Happy</button>
+            <button class="mood-btn" data-mood="sad" aria-pressed="false">Sad</button>
+            <button class="mood-btn" data-mood="focus" aria-pressed="false">Focus</button>
+            <button class="mood-btn" data-mood="energy" aria-pressed="false">Energy</button>
+          </div>
+          <label for="algo" class="sr-only">วิธีเรียงเพลง</label>
+          <select id="algo" onchange="loadDashboard()">
+            <option value="selection">Selection Sort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="bubble">Bubble Sort</option>
+          </select>
+        </div>
+
+        <section id="previewPlayer" aria-label="เครื่องเล่นตัวอย่างเพลง" aria-live="polite" hidden>
+          <strong id="previewTitle">เลือกเพลงเพื่อฟังตัวอย่าง</strong>
+          <span id="previewArtist"></span>
+          <audio id="previewAudio" controls preload="none" aria-label="เล่นหรือหยุดตัวอย่างเพลง"></audio>
+        </section>
+        <div id="songs" aria-live="polite" aria-label="รายการเพลง"></div>
+      </section>
+
+      <div>
+        <section class="panel" aria-labelledby="queueHeading" style="margin-bottom: 20px;">
+          <div class="panel-heading">
+            <h2 id="queueHeading">คิวฟัง</h2>
+            <span class="badge" id="queueSize">0</span>
+          </div>
+          <div class="toolbar">
+            <button class="primary" onclick="processQueue()">▶ เริ่มเล่นคิวอัตโนมัติ</button>
+            <button class="warn" onclick="stopQueuePlayback()">หยุดเล่นคิว</button>
+          </div>
+          <p id="queueStatus" aria-live="polite" style="color: var(--muted); margin: 0 0 12px; font-size: 0.86rem;">เพิ่มเพลงเข้าคิว แล้วกดเริ่มเล่น</p>
+          <ul id="watchlist"></ul>
+        </section>
+
+        <section class="panel" aria-labelledby="historyHeading">
+          <div class="panel-heading">
+            <h2 id="historyHeading">ประวัติ</h2>
+            <span class="tag">Stack</span>
+          </div>
+          <div class="toolbar">
+            <button class="warn" onclick="undo()">↩ ย้อนกลับ</button>
+          </div>
+          <ul id="history"></ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="songModal" class="modal" onclick="if (event.target === this) closeSongModal()">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalName">
+      <button class="modal-close" aria-label="ปิดรายละเอียดเพลง" onclick="closeSongModal()">&times;</button>
+      <div class="modal-header">
+        <img id="modalImage" src="" alt="">
+        <div>
+          <h2 id="modalName"></h2>
+          <p><span id="modalArtist"></span> · <span id="modalGenre"></span></p>
+        </div>
+      </div>
+      <dl class="details">
+        <div><dt>อัลบั้ม</dt><dd id="modalAlbum"></dd></div>
+        <div><dt>ความยาว</dt><dd id="modalDuration"></dd></div>
+        <div><dt>อารมณ์</dt><dd id="modalMood"></dd></div>
+        <div><dt>ลิงก์</dt><dd><a href="#" id="modalLink" target="_blank" rel="noreferrer">เปิด iTunes</a></dd></div>
+      </dl>
+      <div id="modalPreviewWrap" style="display: none; margin-top: 14px;">
+        <audio id="modalPreview" controls preload="none"></audio>
+      </div>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

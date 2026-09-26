@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "title": "Chasing Cars",
+    "artist": "Snow Patrol",
+    "album": "Eyes Open",
+    "genre": "Rock",
+    "image": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/6d/0d/8d/6d0d8d7b-73a5-4e63-9239-79cccd6d47f7/cover.jpg/100x100bb.jpg",
+    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/4d/1d/4d/4d1d4d0f-9d58-4d7a-a1f5-40d6e83ed7f6/mzaf_7948548427717338940.plus.aac.p.m4a",
+    "url": "https://music.apple.com/us/album/chasing-cars/200550908?i=200551420",
+    "duration": 265000,
+    "price": 1.29,
+    "mood": "chill"
+  },
+  {
+    "id": 2,
+    "title": "Good as Hell",
+    "artist": "Lizzo",
+    "album": "Cuz I Love You",
+    "genre": "Pop",
+    "image": "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3e/88/9f/3e889f3f-7b0b-4a06-a294-8d3761dc6f4b/cover.jpg/100x100bb.jpg",
+    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/58/d3/69/58d36962-4f1b-42ce-b0be-ff7eb43f32f9/mzaf_6403383923595058053.plus.aac.p.m4a",
+    "url": "https://music.apple.com/us/album/good-as-hell/1440866083?i=1440866106",
+    "duration": 157000,
+    "price": 1.29,
+    "mood": "happy"
+  },
+  {
+    "id": 3,
+    "title": "Someone Like You",
+    "artist": "Adele",
+    "album": "21",
+    "genre": "Pop",
+    "image": "https://is4-ssl.mzstatic.com/image/thumb/Music124/v4/91/3d/7d/913d7d5c-1e31-41f4-a7d5-9c7d0a81f0a5/cover.jpg/100x100bb.jpg",
+    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/93/6a/61/936a61fe-70a7-4a1a-b92d-38df9dcd33a9/mzaf_7750524040883101457.plus.aac.p.m4a",
+    "url": "https://music.apple.com/us/album/someone-like-you/728275067?i=728275098",
+    "duration": 285000,
+    "price": 1.29,
+    "mood": "sad"
+  },
+  {
+    "id": 4,
+    "title": "Clarity",
+    "artist": "Zedd",
+    "album": "Clarity",
+    "genre": "Electronic",
+    "image": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/ab/1c/54/ab1c5414-d16e-4c13-aab4-2e1f4bc11bf0/cover.jpg/100x100bb.jpg",
+    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/63/3b/fe/633bfeaf-3d36-4d3d-b48d-8b7f1912b5ec/mzaf_6292651381778763229.plus.aac.p.m4a",
+    "url": "https://music.apple.com/us/album/clarity/504989960?i=504989974",
+    "duration": 232000,
+    "price": 1.29,
+    "mood": "focus"
+  },
+  {
+    "id": 5,
+    "title": "Can't Hold Us",
+    "artist": "Macklemore & Ryan Lewis",
+    "album": "The Heist",
+    "genre": "Hip-Hop/Rap",
+    "image": "https://is2-ssl.mzstatic.com/image/thumb/Music115/v4/8b/31/8b/8b318b7f-4d96-4027-b274-5ad146a6c446/cover.jpg/100x100bb.jpg",
+    "preview": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/3e/f2/fa/3ef2fa3e-59b4-40d3-a25a-f5e8d3c5ec9d/mzaf_505794317201450353.plus.aac.p.m4a",
+    "url": "https://music.apple.com/us/album/cant-hold-us/510362976?i=510362995",
+    "duration": 257000,
+    "price": 1.29,
+    "mood": "energy"
+  }
+]
