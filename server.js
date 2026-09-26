@@ -10,7 +10,7 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const API_URL = 'https://itunes.apple.com/search';
 let songs = [];
